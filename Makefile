@@ -1,9 +1,9 @@
-SVGS=*.svg
+SVGS=$(wildcard *.svg)
 PNGS=$(SVGS:%.svg=%.png)
 
 all: $(PNGS)
 clean:
-	rm *.png
+	rm -f *.png
 
 %.png: %.svg
 	rsvg-convert --width=500 --height=500 $< > $@
