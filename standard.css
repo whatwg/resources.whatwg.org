@@ -16,9 +16,9 @@ body { margin: 0 auto; padding: 0 1.5em 2em 2.5em; max-width: 80em; background: 
 }
 
 @media (max-width: 767px) {
-  html { background: #fff; tab-size: 2; }
+  html { background: #fff; tab-size: 2; hyphens: auto; }
   body { max-width: none; padding: 0 0.625em; }
-  pre, code, a { word-wrap: break-word; }
+  pre, code, a { word-wrap: break-word; hyphens: manual; }
   .selected-text-file-an-issue { left: 0; text-align: left; }
 }
 
