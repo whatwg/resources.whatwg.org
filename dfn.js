@@ -2,8 +2,6 @@
 // makes <dfn> elements link back to all uses of the term
 // no copyright is asserted on this file
 
-var dfnTimer = new Date();
-
 var dfnMapTarget = -1;
 var dfnMapDone = false;
 var dfnMap = {};
@@ -38,8 +36,6 @@ function initDfn() {
     }
     dfnMapDone = true;
     document.body.className += " dfnEnabled";
-    //if (getCookie('profile') == '1')
-    //  document.getElementsByTagName('h2')[0].textContent += '; dfn.js: ' + (new Date() - dfnTimer) + 'ms to do ' + dfnMapTarget + ' links in ' + n + ' loops';
   }
   initDfnInternal();
 }
@@ -59,7 +55,7 @@ function dfnShow(event) {
   }
   if (dfnMapDone) {
     var node = event.target;
-    while (node && (node.nodeType != event.target.ELEMENT_NODE || node.tagName != "DFN"))
+    while (node && (!node instanceof HTMLElement || !(node.localName == 'dfn' || (node instanceof HTMLHeadingElement && node.hasAttribute('data-dfn-type')))))
       node = node.parentNode;
     if (node) {
       event.preventDefault();
@@ -168,9 +164,9 @@ function dfnMovePanel(event) {
 function dfnGetCaption(link) {
   var node = link;
   while (node) {
-    if (node.nodeType == node.ELEMENT_NODE && node.tagName.match(/^H[1-6]$/)) {
+    if (node instanceof HTMLHeadingElement) {
       return node;
-    } else if (node.nodeType == node.ELEMENT_NODE && node.tagName == 'NAV') {
+    } else if (node instanceof HTMLElement && node.localName == 'nav') {
       return 'Navigation';
     } else if (!node.previousSibling) {
       node = node.parentNode;
