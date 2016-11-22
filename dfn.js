@@ -14,6 +14,7 @@ function initDfn() {
     n += 1;
     var start = new Date();
     while (k < dfnMapTarget) {
+      // Don't use .href or .hash because the URL parser is relatively expensive
       var s = links[k].getAttribute('href').split('#')[1];
       if (!links[k].closest('.no-backref, .self-link, ul.index, #idl-index + pre, ol.toc')) {
         if (links[k].hasAttribute('data-x-internal'))
