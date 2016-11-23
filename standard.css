@@ -3,9 +3,12 @@
 html { margin: 0; padding: 0; background: white; color: black; }
 body { margin: 0 auto; padding: 0 1.5em 2em 2.5em; max-width: 80em; background: white; color: black; }
 
+@keyframes fade-target {
+  0%, 50% { background:yellow }
+}
+
 @media screen {
-  html { background: bottom right no-repeat linear-gradient(357deg, #A4A4A4 0, #CCCCCC 7.5em, #FFFFFF 60vh); }
-  body { margin-bottom: 60vh; }
+  dfn:target, a:target { animation: 3s ease 0s 1 fade-target; }
   :link, :visited { text-decoration: none; }
   :link:hover, :visited:hover, :link:focus, :visited:focus { text-decoration: underline; }
   :link { color: #00C; }
