@@ -28,7 +28,7 @@
 
   function appendFileLink() {
     if (document.body) {
-      document.body.appendChild(fileLink);
+      document.body.insertBefore(fileLink, document.body.firstChild);
     } else {
       setTimeout(appendFileLink, 1000);
     }
