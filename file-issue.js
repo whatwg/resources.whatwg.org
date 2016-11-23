@@ -26,7 +26,14 @@
   fileLink.className = 'selected-text-file-an-issue';
   fileLink.textContent = 'File an issue about the selected text';
 
-  document.body.appendChild(fileLink);
+  function appendFileLink() {
+    if (document.body) {
+      document.body.appendChild(fileLink);
+    } else {
+      setTimeout(appendFileLink, 1000);
+    }
+  }
+  appendFileLink();
 
   window.addEventListener('mouseup', handleInteraction);
   window.addEventListener('keydown', handleInteraction);
