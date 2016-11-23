@@ -6,13 +6,14 @@ var dfnMapTarget = -1;
 var dfnMapDone = false;
 var dfnMap = {};
 function initDfn() {
+  var supportsIdleCallback = 'requestIdleCallback' in window;
   var links = document.querySelectorAll('a[href*="#"]');
   dfnMapTarget = links.length;
   var k = 0;
   var n = 0;
   var initDfnInternal = function () {
     n += 1;
-    var start = new Date();
+    var start = Date.now();
     while (k < dfnMapTarget) {
       // Don't use .href or .hash because the URL parser is relatively expensive
       var s = links[k].getAttribute('href');
@@ -26,11 +27,11 @@ function initDfn() {
       }
       k += 1;
       if (k % 1000 === 0) {
-        if ('requestIdleCallback' in window) {
+        if (supportsIdleCallback) {
             requestIdleCallback(initDfnInternal);
             return;
         } else {
-          if (new Date() - start > 500) {
+          if (Date.now() - start > 500) {
             setTimeout(initDfnInternal, 500);
             return;
           }
