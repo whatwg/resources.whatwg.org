@@ -5,6 +5,8 @@
 //
 // If you don't have a file an issue link on your spec (e.g. for a spec split into multiple documents), you can use
 // a `data-file-issue-url=""` attribute on the `<script>` tag, and include this script right after the `<body>` tag.
+//
+// If you want to include this script in `head`, use `defer` instead of `async`.
 
 (function () {
   'use strict';
