@@ -24,6 +24,14 @@ dfn > a.self-link::before {
   content: "#";
 }
 
+/* Hide dfn self-links on mobile, since there's no hover, and if you click they're covered by the
+   dfn.js popup anyway */
+@media (max-width: 767px) {
+  dfn > a.self-link {
+    display: none;
+  }
+}
+
 /* Hide editor visually, but leave it for scraping tools */
 .head .editor {
   display: none;
