@@ -29,7 +29,7 @@ env:
     - DEPLOY_USER="yourusername"
 
 script:
-  - curl --remote-name https://resources.whatwg.org/build/deploy.sh && bash ./deploy.sh
+  - curl --remote-name --fail https://resources.whatwg.org/build/deploy.sh && bash ./deploy.sh
 
 notifications:
   email:
@@ -40,5 +40,5 @@ notifications:
 Similarly, a local deploy can be performed with
 
 ```bash
-curl --remote-name https://resources.whatwg.org/build/deploy.sh && bash ./deploy.sh --local
+curl --remote-name --fail https://resources.whatwg.org/build/deploy.sh && bash ./deploy.sh --local
 ```
