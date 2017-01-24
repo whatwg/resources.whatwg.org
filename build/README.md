@@ -1,14 +1,14 @@
 # Build resources
 
-The resources in this folder are used for building WHATWG specifications.
+The resources in this folder are used for building WHATWG standards.
 
 ## `deploy.sh`
 
-The `deploy.sh` script is used by most WHATWG specifications and is meant to run either on Travis CI, or locally with the `--local` command-line flag for preview purposes. It performs the following steps:
+The `deploy.sh` script is used by most WHATWG standards and is meant to run either on Travis CI, or locally for preview purposes. It performs the following steps:
 
 - Running [Bikeshed](https://github.com/tabatkins/bikeshed), through its [web API](https://api.csswg.org/bikeshed/), to produce:
-  - If on master, the built living standard, as well as a commit snapshot
-  - Otherwise, a branch snapshot of the specification
+  - If on master, the built Living Standard, as well as a commit snapshot
+  - Otherwise, a branch snapshot of the standard
 - Running the [Nu HTML checker](http://checker.html5.org/) on the build results
 - Deploying the build results to the WHATWG web server
 
@@ -40,5 +40,7 @@ notifications:
 Similarly, a local deploy can be performed with
 
 ```bash
-curl --remote-name --fail https://resources.whatwg.org/build/deploy.sh && bash ./deploy.sh --local
+curl --remote-name --fail https://resources.whatwg.org/build/deploy.sh && bash ./deploy.sh
 ```
+
+Whether the script is running a local vs. Travis deploy is determined by checking [the `$TRAVIS` environment variable](https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables).
