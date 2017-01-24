@@ -17,7 +17,9 @@ BRANCHES_DIR="branch-snapshots"
 SERVER="75.119.197.251"
 SERVER_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDM6WJlvCc/+Zy2wrdzfKMv0Mb2Pmf9INvJPOH/zFrG5TbrKWY2LbNB6m3kkYTDQJzc0EuxCytuDsGhTuzTgc3drHwe2dys7cUQyQzS0iue50r6nBMfr1x2h6WhV3OZHkzFgqS17vlVdlLcGHCCwYgm19TGlrqY5RDnE+jTEAC/9AN7YFbbyfZV5fzToXwA2sFyj9TtwKfu/EeZAInPBpaLumu/glhr+rFXwhQQdNFh7hth8b4flG5mOqODju94wtbuDa4Utw1+S/zCeFIU55R7JHa29Pz3rL6Rpiiin9SpenjkD3UpP+y8WC1OaMImEh1XNUuomQa+6qxXEjxQAW1r"
 
-if [ "$TRAVIS" == "true" -a "$TRAVIS_PULL_REQUEST" == "true" ]; then
+# Note: $TRAVIS_PULL_REQUEST is either a number or false, not true or false.
+# https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
+if [ "$TRAVIS" == "true" -a "$TRAVIS_PULL_REQUEST" != "false" ]; then
     echo "Skipping deploy for a pull request; the branch build will suffice"
     exit 0
 fi
