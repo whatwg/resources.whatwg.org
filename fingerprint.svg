@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-23 -32 46 64" width="46" height="64" stroke="black" fill="none">
+<g transform="rotate(-12)">
+<ellipse rx="24" ry="33" stroke-dasharray="24,3"/>
+<ellipse rx="21" ry="30" stroke-dasharray="30,2"/>
+<ellipse rx="18" ry="27" stroke-dasharray="16,2"/>
+<ellipse rx="15" ry="24" stroke-dasharray="27,4"/>
+<ellipse rx="12" ry="21" stroke-dasharray="20,2"/>
+<ellipse rx="9" ry="17" stroke-dasharray="27,3"/>
+<ellipse rx="6" ry="13" stroke-dasharray="20,2"/>
+<ellipse rx="3" ry="9" stroke-dasharray="7,2"/>
+<line y1="-4" y2="4"/>
+</g>
+</svg>
