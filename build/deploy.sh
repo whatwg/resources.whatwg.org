@@ -86,7 +86,8 @@ if [ "$TRAVIS" == "true" ]; then
     # Run the HTML checker only when building on Travis
     (find $WEB_ROOT -name "*.html" -exec bash -c 'echo "Checking {}..."; \
       curl -s -H "Content-Type: text/html; charset=utf-8" \
-        --data-binary @{} https://checker.html5.org/?out=gnu\&file={} \
+        --data-binary @{} \
+        https://checker.html5.org/?out=gnu\&file={}$CHECKER_PARAMS \
       | tee -a OUTPUT; echo' \;); if [ -s OUTPUT ]; then exit 1; fi
 
     # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
