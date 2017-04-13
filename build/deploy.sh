@@ -6,7 +6,7 @@ set -o pipefail
 # See ./README.md for documentation.
 
 SHORTNAME=$(git config --local remote.origin.url | sed -n "s#.*/\([^.]*\)\.git#\1#p")
-INPUT_FILE=$(find . -name "*.bs")
+INPUT_FILE=$(find . -maxdepth 1 -name "*.bs" -print -quit)
 TITLE=$(grep < "$INPUT_FILE" "^Title: .*$" | sed -e "s/Title: //")
 
 LS_URL="https://$SHORTNAME.spec.whatwg.org/"
@@ -64,7 +64,7 @@ if [[ $BRANCH != "master" ]] ; then
          -F md-warning="Branch $BRANCH $BRANCH_URL_BASE$BRANCH replaced by $LS_URL" \
          -F md-title="$TITLE (Branch Snapshot $BRANCH)" \
          -F md-Text-Macro="SNAPSHOT-LINK $BACK_TO_LS_LINK" \
-         > "$BRANCH_DIR"/index.html;
+         > "$BRANCH_DIR/index.html";
     echo "Branch snapshot output to $WEB_ROOT/$BRANCHES_DIR/$BRANCH"
 else
     # Commit snapshot, if master
@@ -74,14 +74,14 @@ else
          -F md-warning="Commit $SHA $COMMIT_URL_BASE$SHA replaced by $LS_URL" \
          -F md-title="$TITLE (Commit Snapshot $SHA)" \
          -F md-Text-Macro="SNAPSHOT-LINK $BACK_TO_LS_LINK" \
-         > "$COMMIT_DIR"/index.html;
+         > "$COMMIT_DIR/index.html";
     echo "Commit snapshot output to $WEB_ROOT/$COMMITS_DIR/$SHA"
     echo ""
 
     # Living standard, if master
     curl https://api.csswg.org/bikeshed/ -f -F file=@"$INPUT_FILE" \
          -F md-Text-Macro="SNAPSHOT-LINK $SNAPSHOT_LINK" \
-         > "$WEB_ROOT"/index.html
+         > "$WEB_ROOT/index.html"
     echo "Living standard output to $WEB_ROOT"
 fi
 
@@ -106,5 +106,5 @@ if [[ "$TRAVIS" == "true" ]]; then
 
     # scp to the WHATWG server
     echo "$SERVER $SERVER_PUBLIC_KEY" > known_hosts
-    scp -r -o UserKnownHostsFile=known_hosts "$WEB_ROOT" "$DEPLOY_USER"@"$SERVER":
+    scp -r -o UserKnownHostsFile=known_hosts "$WEB_ROOT" "$DEPLOY_USER@$SERVER":
 fi
