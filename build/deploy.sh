@@ -84,11 +84,11 @@ echo ""
 
 if [ "$TRAVIS" == "true" ]; then
     # Run the HTML checker only when building on Travis
-    (find $WEB_ROOT -name "*.html" -exec bash -c 'echo "Checking {}..."; \
-      curl -s -H "Content-Type: text/html; charset=utf-8" \
-        --data-binary @{} \
-        https://checker.html5.org/?out=gnu\&file={}$CHECKER_PARAMS \
-      | tee -a OUTPUT; echo' \;)
+    (find "$WEB_ROOT" -name "*.html" -exec bash -c "echo Checking \$1...; \
+      curl -s -H 'Content-Type: text/html; charset=utf-8' \
+        --data-binary @\$1 \
+        https://checker.html5.org/?out=gnu\&file=\$1$CHECKER_PARAMS \
+      | tee -a OUTPUT; echo" _ {} \;)
     if [ -s OUTPUT ]; then
       exit 1
     fi
