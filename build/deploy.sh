@@ -88,7 +88,10 @@ if [ "$TRAVIS" == "true" ]; then
       curl -s -H "Content-Type: text/html; charset=utf-8" \
         --data-binary @{} \
         https://checker.html5.org/?out=gnu\&file={}$CHECKER_PARAMS \
-      | tee -a OUTPUT; echo' \;); if [ -s OUTPUT ]; then exit 1; fi
+      | tee -a OUTPUT; echo' \;)
+    if [ -s OUTPUT ]; then
+      exit 1
+    fi
 
     # Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
     ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
