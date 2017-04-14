@@ -12,6 +12,7 @@ Contributors
 * Simon Pieters
 * Terin Stock
 * Henri Sivonen
+* Michael[tm] Smith
 
 License (excluding browser-logos and fonts)
 -------
