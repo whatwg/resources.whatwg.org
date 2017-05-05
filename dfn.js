@@ -4,67 +4,43 @@
 
 (function() {
 
-var dfnMapTarget = -1;
 var dfnMapDone = false;
 var dfnMap = {};
-function initDfn() {
-  var supportsIdleCallback = 'requestIdleCallback' in window;
-  var links = document.querySelectorAll('a[href*="#"]');
-  dfnMapTarget = links.length;
-  var k = 0;
-  var n = 0;
-  var initDfnInternal = function () {
-    n += 1;
-    var start = Date.now();
-    while (k < dfnMapTarget) {
-      // Don't use .href or .hash because the URL parser is relatively expensive
-      var s = links[k].getAttribute('href');
-      s = s.substring(s.indexOf('#') + 1);
-      if (!links[k].closest('.no-backref, .self-link, ul.index, #idl-index + pre, ol.toc')) {
-        if (links[k].hasAttribute('data-x-internal'))
-          s = links[k].getAttribute('data-x-internal')
-        if (!(s in dfnMap))
-          dfnMap[s] = [];
-        dfnMap[s].push(links[k]);
-      }
-      k += 1;
-      if (k % 1000 === 0) {
-        if (supportsIdleCallback) {
-            requestIdleCallback(initDfnInternal);
-            return;
-        } else {
-          if (Date.now() - start > 500) {
-            setTimeout(initDfnInternal, 500);
-            return;
-          }
-        }
-      }
-    }
-    dfnMapDone = true;
-    document.body.className += " dfnEnabled";
-  }
-  initDfnInternal();
-}
-
 var dfnPanel;
-var dfnUniqueId = 0;
 var dfnTimeout;
-document.addEventListener('click', dfnShow, false);
-function dfnShow(event) {
-  if (dfnTimeout) {
-    clearTimeout(dfnTimeout);
-    dfnTimeout = null;
-  }
+function dfnLoad(event) {
   if (dfnPanel) {
     dfnPanel.parentNode.removeChild(dfnPanel);
     dfnPanel = null;
   }
+  if (event.target && event.target instanceof HTMLAnchorElement) {
+    return;
+  }
+  if (!dfnMapDone) {
+    document.body.classList.remove('dfnEnabled');
+    fetch('/xrefs.json')
+      .then(response => response.json())
+      .then(data => {
+        dfnMap = data;
+        dfnMapDone = true;
+        document.body.classList.add('dfnEnabled');
+        dfnShow(event);
+      })
+  } else {
+    dfnShow(event);
+  }
+}
+function dfnShow(event) {
+  var isMultipage = document.documentElement.classList.contains('split');
+  if (dfnTimeout) {
+    clearTimeout(dfnTimeout);
+    dfnTimeout = null;
+  }
   if (dfnMapDone) {
     var node = event.target;
-    if (node && node instanceof HTMLAnchorElement)
-      return;
-    while (node && (!node instanceof HTMLElement || !(node.localName == 'dfn' || (node instanceof HTMLHeadingElement && node.hasAttribute('data-dfn-type')))))
+    while (node && (!node instanceof HTMLElement || !(node.localName == 'dfn' || (node instanceof HTMLHeadingElement && node.hasAttribute('data-dfn-type'))))) {
       node = node.parentNode;
+    }
     if (node) {
       event.preventDefault();
       var panel = document.createElement('div');
@@ -92,73 +68,54 @@ function dfnShow(event) {
       if (node.id in dfnMap || node.parentNode.id in dfnMap) {
         p.textContent = 'Referenced in:';
         var ul = document.createElement('ul');
-        var lastHeader;
-        var lastLi;
-        var n;
-        var sourceLinks = [];
-        if (node.id in dfnMap)
-          for (var i = 0; i < dfnMap[node.id].length; i += 1)
-            sourceLinks.push(dfnMap[node.id][i]);
-        if (node.parentNode.id in dfnMap)
-          for (var i = 0; i < dfnMap[node.parentNode.id].length; i += 1)
-            sourceLinks.push(dfnMap[node.parentNode.id][i]);
-        for (var i = 0; i < sourceLinks.length; i += 1) {
-          var link = sourceLinks[i];
-          var header = dfnGetCaption(link);
-          var a = document.createElement('a');
-          var linkid = link.id;
-          if (!linkid) {
-            if (link.parentNode.id) {
-              linkid = link.parentNode.id;
-            } else {
-              link.id = 'dfnReturnLink-' + dfnUniqueId++;
-              linkid = link.id;
+        var anchorMap = {};
+        if (node.id in dfnMap) {
+          anchorMap = dfnMap[node.id];
+        }
+        if (node.parentNode.id in dfnMap) {
+          anchorMap = dfnMap[node.parentNode.id];
+        }
+        for (var header in anchorMap) {
+          var li = document.createElement('li');
+          for (var i = 0; i < anchorMap[header].length; i += 1) {
+            var a = document.createElement('a');
+            a.onclick = dfnMovePanel;
+            a.href = anchorMap[header][i];
+            if (!isMultipage) {
+              a.href = a.href.substring(a.href.indexOf('#'));
             }
-          }
-          a.href = '#' + linkid;
-          a.onclick = dfnMovePanel;
-          if (header != lastHeader) {
-            lastHeader = header;
-            n = 1;
-            var li = document.createElement('li');
-            if (typeof header == 'string') {
-              a.appendChild(document.createTextNode(header));
+            if (i === 0) {
+              var headerFormatted = header.replace(/</g, '&lt;');
+              headerFormatted = headerFormatted.replace(/ ([^ ]+) (element(?!s)|attribute(?!s)|interface(?!s)|common interface|object)/g, ' <code>$1</code> $2');
+              headerFormatted = headerFormatted.replace(/<code>(Before|After|Other|The|on|an|for|user|User|custom|Custom|built-in|abstract|exotic|global|settings|Browser|Serializable|Transferable|HTML|IDL|document)<\/code>/, '$1');
+              headerFormatted = headerFormatted.replace(/(type=[^\)]+)/g, '<code>$1</code>');
+              headerFormatted = headerFormatted.replace(/(Link type) "([^"]+)"/g, '$1 "<code>$2</code>"');
+              headerFormatted = headerFormatted.replace(/(ImageBitmap|WindowOrWorkerGlobalScope|multipart\/x-mixed-replace|registerProtocolHandler\(\)|registerContentHandler\(\))|storage|/, '<code>$1</code>');
+              a.innerHTML = headerFormatted;
             } else {
-              var cloneHeader = header.cloneNode(true);
-              [].slice.call(cloneHeader.querySelectorAll('a, dfn')).forEach(replaceWithChildren);
-              while (cloneHeader.hasChildNodes())
-                a.appendChild(cloneHeader.firstChild);
+              li.appendChild(document.createTextNode(' '));
+              a.appendChild(document.createTextNode('(' + (i + 1) + ')'));
             }
-            lastLi = li;
             li.appendChild(a);
-            ul.appendChild(li);
-          } else {
-            n += 1;
-            a.appendChild(document.createTextNode('(' + n + ')'));
-            lastLi.appendChild(document.createTextNode(' '));
-            lastLi.appendChild(a);
           }
+          ul.appendChild(li);
         }
         panel.appendChild(ul);
       } else {
-        p.textContent = 'No references in this file.';
+        p.textContent = 'No references in this specification.';
       }
       node.appendChild(panel);
       dfnPanel = panel;
     }
   } else {
-    dfnTimeout = setTimeout(dfnShow, 250, event);
+    dfnTimeout = setTimeout(dfnLoad, 250, event);
   }
-}
-
-function replaceWithChildren(el) {
-  while (el.hasChildNodes()) {
-    el.parentNode.insertBefore(el.firstChild, el);
-  }
-  el.parentNode.removeChild(el);
 }
 
 function dfnMovePanel(event) {
+  if (!dfnPanel) {
+    return;
+  }
   dfnPanel.style.position = 'fixed';
   dfnPanel.style.left = '1em';
   dfnPanel.style.bottom = '1em';
@@ -169,23 +126,7 @@ function dfnMovePanel(event) {
   event.stopPropagation();
 }
 
-function dfnGetCaption(link) {
-  var node = link;
-  while (node) {
-    if (node instanceof HTMLHeadingElement) {
-      return node;
-    } else if (node instanceof HTMLElement && node.localName == 'nav') {
-      return 'Navigation';
-    } else if (!node.previousSibling) {
-      node = node.parentNode;
-    } else {
-      node = node.previousSibling;
-    }
-  }
-  return 'Page';
-}
-
-// setup
-initDfn();
+document.body.classList.add('dfnEnabled');
+document.addEventListener('click', dfnLoad, true);
 
 })();
