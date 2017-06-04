@@ -18,12 +18,18 @@ function dfnLoad(event) {
   }
   if (!dfnMapDone) {
     document.body.classList.remove('dfnEnabled');
+    dfnPanel = document.createElement('div');
+    dfnPanel.className = 'dfnPanel';
+    dfnPanel.innerHTML = "Loading cross-references…";
+    dfnMovePanel(null);
     fetch('/xrefs.json')
       .then(response => response.json())
       .then(data => {
         dfnMap = data;
         dfnMapDone = true;
         document.body.classList.add('dfnEnabled');
+        dfnPanel.parentNode.removeChild(dfnPanel);
+        dfnPanel = null;
         dfnShow(event);
       })
   } else {
@@ -123,7 +129,9 @@ function dfnMovePanel(event) {
   dfnPanel.style.maxHeight = '50vh';
   dfnPanel.style.overflow = 'auto';
   document.body.appendChild(dfnPanel);
-  event.stopPropagation();
+  if (event) {
+    event.stopPropagation();
+  }
 }
 
 document.body.classList.add('dfnEnabled');
