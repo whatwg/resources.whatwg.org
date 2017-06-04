@@ -9,12 +9,12 @@ var dfnMap = {};
 var dfnPanel;
 var dfnTimeout;
 function dfnLoad(event) {
+  if (event.target && event.target instanceof HTMLAnchorElement) {
+    return;
+  }
   if (dfnPanel) {
     dfnPanel.parentNode.removeChild(dfnPanel);
     dfnPanel = null;
-  }
-  if (event.target && event.target instanceof HTMLAnchorElement) {
-    return;
   }
   if (!dfnMapDone) {
     document.body.classList.remove('dfnEnabled');
