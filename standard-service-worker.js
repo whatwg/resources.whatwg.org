@@ -15,7 +15,8 @@ const toCache = [
   "https://resources.whatwg.org/bikeshed.css",
   "https://resources.whatwg.org/file-issue.js",
   "https://resources.whatwg.org/commit-snapshot-shortcut-key.js",
-  "https://resources.whatwg.org/logo-" + standardShortname + ".svg"
+  standardShortname === "html" ? "https://resources.whatwg.org/logo.svg"
+                               : "https://resources.whatwg.org/logo-" + standardShortname + ".svg"
 ].concat(self.extraResources || []);
 
 self.oninstall = e => {
