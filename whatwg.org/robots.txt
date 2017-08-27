@@ -1,0 +1,15 @@
+User-agent: archive.org_bot
+Disallow:
+
+User-agent: ia_archiver
+Disallow:
+
+User-agent: ia_archiver-web.archive.org
+Disallow:
+
+User-agent: *
+Disallow: /specs/url/
+Disallow: /specs/web-apps/
+Disallow: /specs/web-controls/
+Disallow: /specs/web-forms/
+Disallow: /specs/web-workers/

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <title>Web Hypertext Application Technology Working Group Gone</title>
+  <link rel="stylesheet" href="/style/tabbed-pages">
+  <link rel="icon" href="https://resources.whatwg.org/logo.svg">
+ </head>
+ <body>
+  <h1>
+   <span class="the">The</span>
+   <strong class="what">Web Hypertext Application Technology</strong>
+   <span class="wg">Working Group</span>
+  </h1>
+  <ul class="navigation">
+   <li><a href="/" rel="home">Home</a></li>
+   <li><a href="https://spec.whatwg.org/">Standards</a></li>
+   <li><a href="/working-mode">Working Mode</a></li>
+   <li><a href="/code-of-conduct">Code of Conduct</a></li>
+   <li><a href="/faq">FAQ</a></li>
+  </ul>
+
+  <h2>Gone</h2>
+
+  <p>The file you are looking for has been intentionally deleted. Good day!</p>
+ </body>
+</html>
